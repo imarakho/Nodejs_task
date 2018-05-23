@@ -115,6 +115,11 @@ new Vue({
         make_operation: function(){
             if((this.oper_type !== "Снятие" && this.oper_type !== "Депозит") || Number(this.oper_balance) <= 0)
                 this.error = prompt("Error!", "Wrong type of operation!");
+<<<<<<< HEAD
+=======
+            else if(this.contracts)
+            {
+>>>>>>> 16e77cc21b02699606b8090d8284c9dffba8fc30
             if (x = this.contracts.find(x => x.contract_num === this.contract_num_form))
             {
                 if(x.contract_num.indexOf("26251") === 0)

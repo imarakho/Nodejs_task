@@ -79,6 +79,7 @@ var b_parser = require('body-parser');
       else
         res.sendStatus(500);
   });
+});
 
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));
