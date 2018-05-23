@@ -3,14 +3,13 @@ var url = require('url');
 var fs = require('fs');
 var express = require('express');
 var app = express();
-var js = require('./read_json')
-var mysql = require('mysql');
-var axios = require('axios');
+var js = require('./read_json');
 var b_parser = require('body-parser');
 
 
   app.use(b_parser.json());
   app.use(b_parser.urlencoded({ extended: true })); 
+  app.use(express.static('static'));
 
   var json = new Object();
   json.contracts = [];
@@ -36,10 +35,10 @@ var b_parser = require('body-parser');
   app.get('/', function (req, res) {
     fs.readFile("./front.html", function(err, data) {
       if (err) {
-        res.writeHead(404, {'Content-Type': 'text/html'});
+       // res.sendStatus(404);
         return res.end("404 Not Found");
       }  
-      res.writeHead(200, {'Content-Type': 'text/html'});
+    //  res.sendStatus(200);
       res.write(data);
       return res.end();
     });
@@ -79,7 +78,6 @@ var b_parser = require('body-parser');
       else
         res.sendStatus(500);
   });
-});
 
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));

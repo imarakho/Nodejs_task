@@ -299,7 +299,7 @@ describe('Post_tests', function() {
             card_lim: -50000,
             contract_num:26252100000000000,
             oper_type:"Снятие",
-            balance: 10000
+            balance: 500
           }
         }).end(function (err, res) {
           expect(res).to.have.status(300);
