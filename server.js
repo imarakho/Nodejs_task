@@ -12,7 +12,6 @@ var b_parser = require('body-parser');
   app.use(b_parser.json());
   app.use(b_parser.urlencoded({ extended: true })); 
 
-  //var filename = "./front.html";
   var json = new Object();
   json.contracts = [];
   var operations =[];
@@ -60,22 +59,21 @@ var b_parser = require('body-parser');
   app.get('/api/comission/', function (req, res) {
     if(!res.send(comission))
        res.sendStatus(500);
-       /*fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
-        if (err) throw err;
-        console.log('comission has been saved!');
-      });*/
    });
   app.post('/api/new_contract/', function (req, res) {
       var obj = req.body.contracts;
       var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num === req.body.contracts.contract_num));
-      if(find === -1 && Number(req.body.contract_num) >= 0 && req.body.contract_num.length === 17)
+     // console.log(find);
+    //  console.log(obj.contract_num.length);
+      if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17)
       {
+        console.log(Number(obj.contract_num));
         json.contracts.push({contract_num:obj.contract_num, 
           balance:obj.balance});
           fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
             if (err) throw err;
             console.log('The file has been saved!');
-            res.send(200);
+            res.sendStatus(200);
         });
       }
       else
@@ -84,23 +82,28 @@ var b_parser = require('body-parser');
 
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));
-    if(Number(req.body.operation.balance) > 0)
+   // console.log(Number(json.contracts[find].balance) - Number(req.body.operation.balance));
+    if(Number(req.body.operation.balance) > 0 && find !== -1 && Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim)
     {
-    if(req.body.operation.oper_type === 'Снятие' )
+    if(req.body.operation.oper_type == 'Снятие')
     {
-      res.sendStatus(200);
-      if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim)
-      {
-        json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
-      }
-      if (Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && req.body.operation.card_lim)
+      var com;
+      if (Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && Number(req.body.operation.card_lim) !== 0)
       {
         comission.com += Number(req.body.operation.balance) / 100;
-        json.contracts[find].balance -= Number(req.body.operation.balance) / 100;
+        var cm = Number(req.body.operation.balance) / 100;
+        json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
+        json.contracts[find].balance -= cm;
         fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
         if (err) throw err;
         console.log('comission has been saved!');
-      });
+        res.sendStatus(300);
+        });
+      }
+      else if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= Number(req.body.operation.card_lim))
+      {
+        json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
+        res.sendStatus(200);
       }
     }
     else if(req.body.operation.oper_type === 'Депозит')
@@ -118,7 +121,6 @@ var b_parser = require('body-parser');
     fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
       if (err) throw err;
       console.log('contracts has been saved!');
-     // return res.end();
     });
   }
   else
@@ -138,13 +140,18 @@ app.post('/api/cancel_operation/', function (req, res) {
     if(operations[find].oper_type === 'Депозит')
       json.contracts[find_json].balance = Number(json.contracts[find_json].balance) - Number(operations[find].sum);
     else
-      json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum);
-  //else if(json.contracts[find_json].balance < 0)
-//  {
- //   json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum);
-   // comission.com += (Number(json.contracts[find_json].balance) / 100);
-  //  json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + (Number(json.contracts[find_json].balance) / 100); 
-  //}
+    {
+      if(json.contracts[find_json].balance < 0)
+      {
+        var cm = Number(operations[find].sum) / 100;
+        json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum) + cm;
+       // json.contracts[find_json].balance += Number(operations[find].sum);
+        comission.com -= (Number(operations[find].sum) / 100);
+
+      }
+      else
+        json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum);
+    }
     operations.splice(find,1);
     operations = operations.reverse();
     fs.writeFile('operations.json', JSON.stringify(operations), (err) => {
@@ -155,6 +162,10 @@ app.post('/api/cancel_operation/', function (req, res) {
     if (err) throw err;
     console.log('contracts has been saved!');
     });
+    fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
+      if (err) throw err;
+      console.log('comission has been saved!');
+      });
   }
 });
 

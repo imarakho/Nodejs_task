@@ -106,20 +106,21 @@ describe('Post_tests', function() {
       chai.request(app).post('/api/new_contract/').send({
         contracts:
         {
-            contract_num:26252000000900400,
+            contract_num:"26252000000900400",
             balance: 1450
         }
       }).end(function(err, res) {
+        //expect(res).to.have.status(200);
         done();
       });
         });
     });
     describe('Adding contract which exists', function() {
-      it('Adds new contract to file which exist', function(done) {
+      it('Dont add new contract to file which exist', function(done) {
         chai.request(app).post('/api/new_contract/').send({
           contracts:
           {
-              contract_num:26252000000900400,
+              contract_num:"26252000000900400",
               balance: 1450
           }
         }).end(function(err, res) {
@@ -133,7 +134,7 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/new_contract/').send({
           contracts:
           {
-              contract_num:-2625200000900400,
+              contract_num:"-2625200000900400",
               balance: 1450
           }
         }).end(function(err, res) {
@@ -147,10 +148,10 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/operation/').send({
           operation:
           {
-              card_lim: 0,
-              contract_num:26252000000000000,
+              card_lim: -50000,
+              contract_num:26252000000900400,
               oper_type:"Депозит",
-              balance: 1000
+              balance: 11000
           }
         }).end(function (err, res) {
           expect(res).to.have.status(500);
@@ -163,8 +164,8 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/operation/').send({
           operation:
           {
-              card_lim: 0,
-              contract_num:26252000000000000,
+              card_lim: -50000,
+              contract_num:26252000000900400,
               oper_type:"Депозит",
               balance: -1000
           }
@@ -179,8 +180,8 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/operation/').send({
           operation:
           {
-              card_lim: 0,
-              contract_num:26251000000000000,
+              card_lim: -50000,
+              contract_num:26252000000900400,
               oper_type:"Снятие",
               balance: 500
           }
@@ -195,10 +196,52 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/operation/').send({
           operation:
           {
-              card_lim: 0,
-              contract_num:26253000000000000,
+              card_lim: -50000,
+              contract_num:26252000000900400,
               oper_type:"Снятие",
               balance: -500
+          }
+        }).end(function (err, res) {
+          expect(res).have.status(404);
+          done();
+      });
+      });
+      it('Dont does credit withdraw on debet card', function(done) {
+        chai.request(app).post('/api/operation/').send({
+          operation:
+          {
+              card_lim: 0,
+              contract_num:26251000000000000,
+              oper_type:"Снятие",
+              balance: 50000
+          }
+        }).end(function (err, res) {
+          expect(res).have.status(404);
+          done();
+      });
+    });
+      it('Dont does credit withdraw on universal card under credit limit', function(done) {
+        chai.request(app).post('/api/operation/').send({
+          operation:
+          {
+              card_lim: -50000,
+              contract_num:26252000000000000,
+              oper_type:"Снятие",
+              balance: 55000
+          }
+        }).end(function (err, res) {
+          expect(res).have.status(404);
+          done();
+      });
+      });
+      it('Dont does credit withdraw on credit card under credit limit', function(done) {
+        chai.request(app).post('/api/operation/').send({
+          operation:
+          {
+              card_lim: -150000,
+              contract_num:26253000000000000,
+              oper_type:"Снятие",
+              balance: 150000
           }
         }).end(function (err, res) {
           expect(res).have.status(404);
@@ -211,7 +254,7 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/cancel_operation/').send({
             operation_cancel:
             {
-                contract_num:26251000000000000,
+                contract_num:26252000000900400,
                 token:"weewquewiqy343ui12y43iughewriueyoqbewrioe"
             }
         }).end(function (err, res) {
@@ -225,7 +268,7 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/cancel_operation/').send({
             operation_cancel:
             {
-                contract_num:26252000000000000,
+                contract_num:26252000000900400,
                 token:"weewquewiqy343Oi12y43iughewriueyoqbewrioe"
             }
         }).end(function (err, res) {
@@ -239,11 +282,27 @@ describe('Post_tests', function() {
         chai.request(app).post('/api/cancel_operation/').send({
             operation_cancel:
             {
-                contract_num:262520021000000000,
+                contract_num:26252000000900400,
                 token:"weewquewiqy343Oi12y43iughewriueyoqbewrioe"
             }
         }).end(function (err, res) {
           expect(res).have.status(404);
+          done();
+      });
+      });
+    });
+    describe('Check comission', function() {
+      it('Cheks that comission puts on bank number', function(done) {
+        chai.request(app).post('/api/operation/').send({
+          operation:
+          {
+            card_lim: -50000,
+            contract_num:26252100000000000,
+            oper_type:"Снятие",
+            balance: 10000
+          }
+        }).end(function (err, res) {
+          expect(res).to.have.status(300);
           done();
       });
       });
