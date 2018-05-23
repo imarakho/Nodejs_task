@@ -35,7 +35,6 @@ var b_parser = require('body-parser');
   app.get('/', function (req, res) {
     fs.readFile("./front.html", function(err, data) {
       if (err) {
-       // res.sendStatus(404);
         return res.end("404 Not Found");
       }  
     //  res.sendStatus(200);
@@ -62,8 +61,6 @@ var b_parser = require('body-parser');
   app.post('/api/new_contract/', function (req, res) {
       var obj = req.body.contracts;
       var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num === req.body.contracts.contract_num));
-     // console.log(find);
-    //  console.log(obj.contract_num.length);
       if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17)
       {
         console.log(Number(obj.contract_num));
@@ -81,7 +78,6 @@ var b_parser = require('body-parser');
 
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));
-   // console.log(Number(json.contracts[find].balance) - Number(req.body.operation.balance));
     if(Number(req.body.operation.balance) > 0 && find !== -1 && Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim)
     {
     if(req.body.operation.oper_type == 'Снятие')
@@ -107,7 +103,6 @@ var b_parser = require('body-parser');
     }
     else if(req.body.operation.oper_type === 'Депозит')
     {
-      console.log(find);
       json.contracts[find].balance = Number(json.contracts[find].balance) + Number(req.body.operation.balance);
       res.sendStatus(500);
     }
@@ -144,7 +139,6 @@ app.post('/api/cancel_operation/', function (req, res) {
       {
         var cm = Number(operations[find].sum) / 100;
         json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum) + cm;
-       // json.contracts[find_json].balance += Number(operations[find].sum);
         comission.com -= (Number(operations[find].sum) / 100);
 
       }

@@ -56,8 +56,6 @@ import axios from 'axios'
 export default ({
     data: function() {
         return {
-            type: "dfsald",
-            types: ["cd", "cu", "cc"],
             contracts: [],
             operations: [],
             contract_num_form: "",
@@ -71,23 +69,10 @@ export default ({
         }
     },
     methods: {
-        sendMessage: function(val){
-            console.log(val);
-            this.messages.push(val.toString())
-        },
-        make_debet: function()
-        {
-            if (Number(x.balance) - Number(this.oper_balance) < 0)
-                this.error = prompt("Error!", "Wrong ammount of money!");
-            console.log(Number(x.balance) - Number(this.oper_balance));
-        },
         cancel_operation: function()
         {
-            var find = this.contracts.indexOf(z => z.contract_num_form_cancel == this.contracts.contract_num);
-            console.log(find);
-            console.log(this.contracts);
-            console.log(this.contract_num_form_cancel);
-    
+            var z;
+            var find = this.contracts.indexOf(z => z.contract_num_form_cancel == this.contracts.contract_num);   
             if(this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe" && find == -1)
                 this.error = prompt("Error!", "Wrong token or number of contract!");
             else
@@ -111,10 +96,10 @@ export default ({
         make_operation: function(){
             if((this.oper_type !== "Снятие" && this.oper_type !== "Депозит") || Number(this.oper_balance) <= 0)
                 this.error = prompt("Error!", "Wrong type of operation!");
-            if (x = this.contracts.find(x => x.contract_num === this.contract_num_form))
+            if (this.x = this.contracts.find(x => x.contract_num === this.contract_num_form))
             {
-                if(x.contract_num.indexOf("26251") === 0)
-                    if (Number(x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие")
+                if(this.x.contract_num.indexOf("26251") === 0)
+                    if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие")
                         this.error = prompt("Error!", "Wrong ammount of money!");
                     else
                     {
@@ -134,8 +119,8 @@ export default ({
                         console.log("FUUUCK!");
                         });
                     }
-                else if(x.contract_num.indexOf("26252") === 0)
-                    if (Number(x.balance) - Number(this.oper_balance) < -50000 && this.oper_type == "Снятие")
+                else if(this.x.contract_num.indexOf("26252") === 0)
+                    if (Number(this.x.balance) - Number(this.oper_balance) < -50000 && this.oper_type == "Снятие")
                         this.error = prompt("Error!", "Credit limit is over!");
                     else
                     {
@@ -155,11 +140,11 @@ export default ({
                         console.log("FUUUCK!");
                         });
                     }
-                else if(x.contract_num.indexOf("26253") === 0)
+                else if(this.x.contract_num.indexOf("26253") === 0)
                 {
-                    if (Number(x.balance) - Number(this.oper_balance) <= -150000 && this.oper_type == "Снятие")
+                    if (Number(this.x.balance) - Number(this.oper_balance) <= -150000 && this.oper_type == "Снятие")
                         this.error = prompt("Error!", "Credit limit is over!");
-                    if(Number(x.balance) + Number(this.oper_balance) > 0 && this.oper_type == "Депозит")
+                    if(Number(this.x.balance) + Number(this.oper_balance) > 0 && this.oper_type == "Депозит")
                         this.error = prompt("Error!", "More money than your credit!");
                     else
                     {
