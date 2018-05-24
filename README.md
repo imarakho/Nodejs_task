@@ -1,2 +1,4 @@
 # Nodejs_task
-To start server run:node server.js
+To get npm-modules run command:npm install,
+to start server:node server.js,
+to make tests:mocha test
