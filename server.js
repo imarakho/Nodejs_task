@@ -37,7 +37,6 @@ var b_parser = require('body-parser');
       if (err) {
         return res.end("404 Not Found");
       }  
-    //  res.sendStatus(200);
       res.write(data);
       return res.end();
     });
@@ -63,7 +62,6 @@ var b_parser = require('body-parser');
       var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num === req.body.contracts.contract_num));
       if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17)
       {
-        console.log(Number(obj.contract_num));
         json.contracts.push({contract_num:obj.contract_num, 
           balance:obj.balance});
           fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
@@ -161,10 +159,6 @@ app.post('/api/cancel_operation/', function (req, res) {
       });
   }
 });
-
-  app.post('/api/add_transaction/', function (req, res) {
-    res.send(json)
-  });
 
   app.listen(8080, function () {
     console.log('Example app listening on port 8080!');

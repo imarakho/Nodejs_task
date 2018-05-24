@@ -12229,7 +12229,7 @@ var Component = __webpack_require__(15)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/imarakho/Documents/del_me/src/App.vue"
+Component.options.__file = "/Users/imarakho/Documents/test_task_france/src/App.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] App.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -12240,9 +12240,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-d087d3be", Component.options)
+    hotAPI.createRecord("data-v-4e7b5a3d", Component.options)
   } else {
-    hotAPI.reload("data-v-d087d3be", Component.options)
+    hotAPI.reload("data-v-4e7b5a3d", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -12408,6 +12408,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -12432,6 +12436,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var z;
             var find = this.contracts.indexOf(z => z.contract_num_form_cancel == this.contracts.contract_num);
             if (this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe" && find == -1) this.error = prompt("Error!", "Wrong token or number of contract!");else {
+                this.error = prompt("Success!", "Operation is canceled!");
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/cancel_operation/', {
                     operation_cancel: {
                         contract_num: this.contract_num_form_cancel,
@@ -12440,7 +12445,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (response) {
                     console.log(response);
                 }).catch(function (error) {
-                    console.log("FUUUCK!");
+                    console.log(error);
                 });
             }
         },
@@ -12449,6 +12454,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.x = this.contracts.find(x => x.contract_num === this.contract_num_form)) {
                 if (this.x.contract_num.indexOf("26251") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие") this.error = prompt("Error!", "Wrong ammount of money!");else {
+                        this.error = prompt("Success!", "Operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: 0,
@@ -12459,11 +12465,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }).then(function (response) {
                             console.log(response);
                         }).catch(function (error) {
-                            console.log("FUUUCK!");
+                            console.log(error);
                         });
                     }
                 } else if (this.x.contract_num.indexOf("26252") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < -50000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");else {
+                        this.error = prompt("Success!", "Operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: -50000,
@@ -12474,12 +12481,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }).then(function (response) {
                             console.log(response);
                         }).catch(function (error) {
-                            console.log("FUUUCK!");
+                            console.log(error);
                         });
                     }
                 } else if (this.x.contract_num.indexOf("26253") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) <= -150000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");
                     if (Number(this.x.balance) + Number(this.oper_balance) > 0 && this.oper_type == "Депозит") this.error = prompt("Error!", "More money than your credit!");else {
+                        this.error = prompt("Success!", "Operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: -150000,
@@ -12490,12 +12498,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }).then(function (response) {
                             console.log(response);
                         }).catch(function (error) {
-                            console.log("FUUUCK!");
+                            console.log(error);
                         });
                     }
                 } else this.error = prompt("Error!", "Wrong type of card!");
             } else if (this.contract_num_form.length === 17 && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит") {
-                error = prompt("Yeah!", "New contract is added!");
+                this.error = prompt("Yeah!", "New contract is added!");
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/new_contract/', {
                     contracts: {
                         contract_num: this.contract_num_form,
@@ -12504,7 +12512,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (response) {
                     console.log(response);
                 }).catch(function (error) {
-                    console.log("FUUUCK!");
+                    console.log(error);
                 });
             } else this.error = prompt("Error!", "No such card in base!");
         }
@@ -13420,7 +13428,9 @@ module.exports = function spread(callback) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('input', {
+  return _c('div', [_c('i', {
+    staticClass: "material-icons prefix"
+  }, [_vm._v("account_circle")]), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -13428,6 +13438,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "contract_num_form"
     }],
     attrs: {
+      "placeholder": "contract number",
       "type": "text"
     },
     domProps: {
@@ -13439,7 +13450,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.contract_num_form = $event.target.value
       }
     }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('input', {
+  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('i', {
+    staticClass: "material-icons prefix"
+  }, [_vm._v("attach_money")]), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -13447,6 +13460,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "oper_balance"
     }],
     attrs: {
+      "placeholder": "amount of money",
       "type": "text"
     },
     domProps: {
@@ -13497,7 +13511,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.make_operation()
       }
     }
-  }, [_vm._v("Send")]), _vm._v(" "), _c('h3', [_vm._v(" Отмена операции")]), _vm._v(" "), _c('input', {
+  }, [_vm._v("Send")]), _vm._v(" "), _c('h3', [_vm._v(" Отмена операции")]), _vm._v(" "), _c('i', {
+    staticClass: "material-icons prefix"
+  }, [_vm._v("account_circle")]), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -13505,6 +13521,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "contract_num_form_cancel"
     }],
     attrs: {
+      "placeholder": "contract number",
       "type": "text"
     },
     domProps: {
@@ -13516,7 +13533,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.contract_num_form_cancel = $event.target.value
       }
     }
-  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('input', {
+  }), _vm._v(" "), _c('br'), _vm._v(" "), _c('i', {
+    staticClass: "material-icons prefix"
+  }, [_vm._v("fingerprint")]), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -13524,6 +13543,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "token"
     }],
     attrs: {
+      "placeholder": "token",
       "type": "text"
     },
     domProps: {
@@ -13551,7 +13571,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-d087d3be", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-4e7b5a3d", module.exports)
   }
 }
 

@@ -1,8 +1,10 @@
 <template>
 <div>
-    <input type="text"  v-model="contract_num_form">
+    <i class="material-icons prefix">account_circle</i>
+    <input placeholder="contract number" type="text"  v-model="contract_num_form">
     <br>
-    <input type="text" v-model="oper_balance">
+    <i class="material-icons prefix">attach_money</i>
+    <input placeholder="amount of money" type="text" v-model="oper_balance">
     <br>
     <p>
           <select size="1" v-model="oper_type">
@@ -13,9 +15,11 @@
     <button @click="make_operation()" >Send</button>
    <!-- ловлю данные с експреса и рисую стартовую таблицу-->
     <h3> Отмена операции</h3>
-    <input type="text"  v-model="contract_num_form_cancel">
+    <i class="material-icons prefix">account_circle</i>
+    <input placeholder="contract number" type="text"  v-model="contract_num_form_cancel">
     <br>
-    <input type="text"  v-model="token">
+    <i class="material-icons prefix">fingerprint</i>
+    <input placeholder="token" type="text"  v-model="token">
     <button @click="cancel_operation()" >Cancel</button>
     <h3>Contract table</h3>
     <ul>
@@ -77,6 +81,7 @@ export default ({
                 this.error = prompt("Error!", "Wrong token or number of contract!");
             else
             {
+                this.error = prompt("Success!", "Operation is canceled!");
                 axios.post('http://localhost:8080/api/cancel_operation/', 
                 {
                     operation_cancel:
@@ -89,7 +94,7 @@ export default ({
                     console.log(response);
                 })
                 .catch(function (error) {
-                    console.log("FUUUCK!");
+                    console.log(error);
                 });
             }
         },
@@ -103,6 +108,7 @@ export default ({
                         this.error = prompt("Error!", "Wrong ammount of money!");
                     else
                     {
+                        this.error = prompt("Success!", "Operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -116,7 +122,7 @@ export default ({
                         console.log(response);
                         })
                         .catch(function (error) {
-                        console.log("FUUUCK!");
+                        console.log(error);
                         });
                     }
                 else if(this.x.contract_num.indexOf("26252") === 0)
@@ -124,6 +130,7 @@ export default ({
                         this.error = prompt("Error!", "Credit limit is over!");
                     else
                     {
+                        this.error = prompt("Success!", "Operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -137,7 +144,7 @@ export default ({
                         console.log(response);
                         })
                         .catch(function (error) {
-                        console.log("FUUUCK!");
+                        console.log(error);
                         });
                     }
                 else if(this.x.contract_num.indexOf("26253") === 0)
@@ -148,6 +155,7 @@ export default ({
                         this.error = prompt("Error!", "More money than your credit!");
                     else
                     {
+                        this.error = prompt("Success!", "Operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -161,7 +169,7 @@ export default ({
                         console.log(response);
                         })
                         .catch(function (error) {
-                        console.log("FUUUCK!");
+                        console.log(error);
                         });
                     }
                 }
@@ -171,7 +179,7 @@ export default ({
             else if(this.contract_num_form.length === 17
              && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит")
             {
-                error = prompt("Yeah!", "New contract is added!");
+                this.error = prompt("Yeah!", "New contract is added!");
                 axios.post('http://localhost:8080/api/new_contract/', {
                 contracts:
                 {
@@ -183,7 +191,7 @@ export default ({
                 console.log(response);
                 })
                 .catch(function (error) {
-                console.log("FUUUCK!");
+                console.log(error);
                 });
             }
             else
