@@ -90,7 +90,7 @@ export default ({
                     }
                 })
                 .then(function (response) {
-                    error = prompt("Success!", "Operation is canceled!");
+                    this.error = prompt("Success!", "Operation is canceled!");
                 })
             }
         },
@@ -98,7 +98,7 @@ export default ({
             if((this.oper_type !== "Снятие" && this.oper_type !== "Депозит") || Number(this.oper_balance) <= 0)
                 this.error = prompt("Error!", "Wrong type of operation!");
             this.x = this.contracts.find(x => x.contract_num === this.contract_num_form)
-            if (!isNaN(parseFloat(this.oper_balance)) && Number.isInteger(this.oper_balance))
+            if (!isNaN(parseFloat(this.oper_balance)) && Number.isInteger(this.oper_balance) && this.x !== undefined)
             {
                 if(this.x.contract_num.indexOf("26251") === 0)
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие")
@@ -176,6 +176,8 @@ export default ({
             else if(this.contract_num_form.length == 17
              && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит")
             {
+                let self = this
+                console.log(self);
                 axios.post('http://localhost:8080/api/new_contract/', {
                 contracts:
                 {
@@ -184,10 +186,12 @@ export default ({
                 }
                 })
                 .then(function (response) {
-                this.error = prompt("Yeah!", "New contract is added!");
+                    this.error = prompt("Yeah!", "New contract is added! THIS");
+                    console.log("self contract", self.contracts);
+                    self.contracts.push(this.contract_num_form,this.oper_balance);
                 })
                 .catch(function (error) {
-                this.error = prompt("Error!", "Wrong input!");
+                //this.error = prompt("Error!", "Wrong input!");
                 });
             }
             else

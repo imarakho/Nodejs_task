@@ -12229,7 +12229,7 @@ var Component = __webpack_require__(15)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/imarakho/Documents/test_del/src/App.vue"
+Component.options.__file = "/Users/imarakho/Documents/test_del/static/src/App.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] App.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -12240,9 +12240,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7566139a", Component.options)
+    hotAPI.createRecord("data-v-7e6afde8", Component.options)
   } else {
-    hotAPI.reload("data-v-7566139a", Component.options)
+    hotAPI.reload("data-v-7e6afde8", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -12442,14 +12442,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         token: this.token
                     }
                 }).then(function (response) {
-                    error = prompt("Success!", "Operation is canceled!");
+                    this.error = prompt("Success!", "Operation is canceled!");
                 });
             }
         },
         make_operation: function () {
             if (this.oper_type !== "Снятие" && this.oper_type !== "Депозит" || Number(this.oper_balance) <= 0) this.error = prompt("Error!", "Wrong type of operation!");
             this.x = this.contracts.find(x => x.contract_num === this.contract_num_form);
-            if (!isNaN(parseFloat(this.oper_balance))) {
+            if (!isNaN(parseFloat(this.oper_balance)) && Number.isInteger(this.oper_balance) && this.x !== undefined) {
                 if (this.x.contract_num.indexOf("26251") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие") this.error = prompt("Error!", "Wrong ammount of money!");else {
                         this.error = prompt("Success!", "Debet operation is maked!");
@@ -12501,15 +12501,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 } else this.error = prompt("Error!", "Wrong type of card!");
             } else if (this.contract_num_form.length == 17 && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит") {
+                let self = this;
+                console.log(self);
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/new_contract/', {
                     contracts: {
                         contract_num: this.contract_num_form,
                         balance: this.oper_balance
                     }
                 }).then(function (response) {
-                    this.error = prompt("Yeah!", "New contract is added!");
+                    this.error = prompt("Yeah!", "New contract is added! THIS");
+                    console.log("self contract", self.contracts);
+                    self.contracts.push(this.contract_num_form, this.oper_balance);
                 }).catch(function (error) {
-                    this.error = prompt("Error!", "Wrong input!");
+                    //this.error = prompt("Error!", "Wrong input!");
                 });
             } else this.error = prompt("Error!", "Wrong input!");
         }
@@ -13569,7 +13573,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7566139a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-7e6afde8", module.exports)
   }
 }
 

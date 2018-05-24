@@ -5,7 +5,7 @@ var UglifyJS = require("uglify-es");
 
 module.exports = {
     entry: {
-        main: './src/main.js',
+        main: './static/src/main.js',
     },
     output: {
         path: path.resolve('./static/static/bundles/'),
