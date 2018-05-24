@@ -75,13 +75,12 @@ export default ({
     methods: {
         cancel_operation: function()
         {
-            var z;
-            var find = this.contracts.indexOf(z => z.contract_num_form_cancel == this.contracts.contract_num);   
-            if(this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe" && find == -1)
-                this.error = prompt("Error!", "Wrong token or number of contract!");
+            var find = this.contracts.indexOf(contracts => contracts.contract_num == this.contract_num_form_cancel);
+            console.log(find);
+            if(this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe")
+                this.error = prompt("Error!", "Wrong token!");
             else
             {
-                this.error = prompt("Success!", "Operation is canceled!");
                 axios.post('http://localhost:8080/api/cancel_operation/', 
                 {
                     operation_cancel:
@@ -91,24 +90,22 @@ export default ({
                     }
                 })
                 .then(function (response) {
-                    console.log(response);
+                    error = prompt("Success!", "Operation is canceled!");
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
             }
         },
         make_operation: function(){
             if((this.oper_type !== "Снятие" && this.oper_type !== "Депозит") || Number(this.oper_balance) <= 0)
                 this.error = prompt("Error!", "Wrong type of operation!");
-            if (this.x = this.contracts.find(x => x.contract_num === this.contract_num_form))
+            this.x = this.contracts.find(x => x.contract_num === this.contract_num_form)
+            if (!isNaN(parseFloat(this.oper_balance)) && Number.isInteger(this.oper_balance))
             {
                 if(this.x.contract_num.indexOf("26251") === 0)
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие")
                         this.error = prompt("Error!", "Wrong ammount of money!");
                     else
                     {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Debet operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -130,7 +127,7 @@ export default ({
                         this.error = prompt("Error!", "Credit limit is over!");
                     else
                     {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Universal operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -155,7 +152,7 @@ export default ({
                         this.error = prompt("Error!", "More money than your credit!");
                     else
                     {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Credit operation is maked!");
                         axios.post('http://localhost:8080/api/operation/', {
                         operation:
                         {
@@ -176,10 +173,9 @@ export default ({
                 else
                     this.error = prompt("Error!", "Wrong type of card!");
         }
-            else if(this.contract_num_form.length === 17
+            else if(this.contract_num_form.length == 17
              && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит")
             {
-                this.error = prompt("Yeah!", "New contract is added!");
                 axios.post('http://localhost:8080/api/new_contract/', {
                 contracts:
                 {
@@ -188,14 +184,14 @@ export default ({
                 }
                 })
                 .then(function (response) {
-                console.log(response);
+                this.error = prompt("Yeah!", "New contract is added!");
                 })
                 .catch(function (error) {
-                console.log(error);
+                this.error = prompt("Error!", "Wrong input!");
                 });
             }
             else
-                this.error = prompt("Error!", "No such card in base!");
+                this.error = prompt("Error!", "Wrong input!");
         }
     },
     created: function(){
@@ -205,6 +201,7 @@ export default ({
         .then(function (response) {
             console.log(response)
             self.contracts = response.data.contracts;
+            console.log(contracts);
         })
         .catch(function (error) {
             console.log(error);

@@ -12229,7 +12229,7 @@ var Component = __webpack_require__(15)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/imarakho/Documents/test_task_france/src/App.vue"
+Component.options.__file = "/Users/imarakho/Documents/test_del/src/App.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] App.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -12240,9 +12240,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4e7b5a3d", Component.options)
+    hotAPI.createRecord("data-v-7566139a", Component.options)
   } else {
-    hotAPI.reload("data-v-4e7b5a3d", Component.options)
+    hotAPI.reload("data-v-7566139a", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -12433,28 +12433,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     methods: {
         cancel_operation: function () {
-            var z;
-            var find = this.contracts.indexOf(z => z.contract_num_form_cancel == this.contracts.contract_num);
-            if (this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe" && find == -1) this.error = prompt("Error!", "Wrong token or number of contract!");else {
-                this.error = prompt("Success!", "Operation is canceled!");
+            var find = this.contracts.indexOf(contracts => contracts.contract_num == this.contract_num_form_cancel);
+            console.log(find);
+            if (this.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe") this.error = prompt("Error!", "Wrong token!");else {
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/cancel_operation/', {
                     operation_cancel: {
                         contract_num: this.contract_num_form_cancel,
                         token: this.token
                     }
                 }).then(function (response) {
-                    console.log(response);
-                }).catch(function (error) {
-                    console.log(error);
+                    error = prompt("Success!", "Operation is canceled!");
                 });
             }
         },
         make_operation: function () {
             if (this.oper_type !== "Снятие" && this.oper_type !== "Депозит" || Number(this.oper_balance) <= 0) this.error = prompt("Error!", "Wrong type of operation!");
-            if (this.x = this.contracts.find(x => x.contract_num === this.contract_num_form)) {
+            this.x = this.contracts.find(x => x.contract_num === this.contract_num_form);
+            if (!isNaN(parseFloat(this.oper_balance))) {
                 if (this.x.contract_num.indexOf("26251") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие") this.error = prompt("Error!", "Wrong ammount of money!");else {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Debet operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: 0,
@@ -12470,7 +12468,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 } else if (this.x.contract_num.indexOf("26252") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < -50000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");else {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Universal operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: -50000,
@@ -12487,7 +12485,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 } else if (this.x.contract_num.indexOf("26253") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) <= -150000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");
                     if (Number(this.x.balance) + Number(this.oper_balance) > 0 && this.oper_type == "Депозит") this.error = prompt("Error!", "More money than your credit!");else {
-                        this.error = prompt("Success!", "Operation is maked!");
+                        this.error = prompt("Success!", "Credit operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: -150000,
@@ -12502,19 +12500,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         });
                     }
                 } else this.error = prompt("Error!", "Wrong type of card!");
-            } else if (this.contract_num_form.length === 17 && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит") {
-                this.error = prompt("Yeah!", "New contract is added!");
+            } else if (this.contract_num_form.length == 17 && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит") {
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/new_contract/', {
                     contracts: {
                         contract_num: this.contract_num_form,
                         balance: this.oper_balance
                     }
                 }).then(function (response) {
-                    console.log(response);
+                    this.error = prompt("Yeah!", "New contract is added!");
                 }).catch(function (error) {
-                    console.log(error);
+                    this.error = prompt("Error!", "Wrong input!");
                 });
-            } else this.error = prompt("Error!", "No such card in base!");
+            } else this.error = prompt("Error!", "Wrong input!");
         }
     },
     created: function () {
@@ -12523,6 +12520,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('http://localhost:8080/api/contracts/').then(function (response) {
             console.log(response);
             self.contracts = response.data.contracts;
+            console.log(contracts);
         }).catch(function (error) {
             console.log(error);
         });
@@ -13571,7 +13569,7 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-4e7b5a3d", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-7566139a", module.exports)
   }
 }
 

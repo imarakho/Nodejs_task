@@ -60,7 +60,8 @@ var b_parser = require('body-parser');
   app.post('/api/new_contract/', function (req, res) {
       var obj = req.body.contracts;
       var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num === req.body.contracts.contract_num));
-      if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17)
+      if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17 
+      && !isNaN(parseFloat(obj.contract_num)) && !isNaN(parseFloat(obj.balance)))
       {
         json.contracts.push({contract_num:obj.contract_num, 
           balance:obj.balance});
@@ -76,7 +77,10 @@ var b_parser = require('body-parser');
 
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));
-    if(Number(req.body.operation.balance) > 0 && find !== -1 && Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim)
+    if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && req.body.operation.card_lim === 0 && req.body.operation.oper_type === 'Снятие') 
+      res.sendStatus(404);
+    else if((Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim || req.body.operation.card_lim === 0) 
+    && Number(req.body.operation.balance) > 0 && find !== -1)
     {
     if(req.body.operation.oper_type == 'Снятие')
     {
@@ -116,18 +120,21 @@ var b_parser = require('body-parser');
     });
   }
   else
-      res.sendStatus(404);
+  {
+    console.log("404" + Number(req.body.operation.balance));
+    res.sendStatus(404);
+  }
 });
 
 //token weewquewiqy343ui12y43iughewriueyoqbewrioe
 app.post('/api/cancel_operation/', function (req, res) {
-  operations = operations.reverse();
   var find = operations.indexOf(operations.find(x => x.contract_num == req.body.operation_cancel.contract_num));
   var find_json = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation_cancel.contract_num));
   if(find === -1 || find_json === -1 || req.body.operation_cancel.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe")
       res.sendStatus(404);
   else
   {
+    operations = operations.reverse();
     res.sendStatus(200);
     if(operations[find].oper_type === 'Депозит')
       json.contracts[find_json].balance = Number(json.contracts[find_json].balance) - Number(operations[find].sum);

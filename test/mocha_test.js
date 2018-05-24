@@ -183,20 +183,6 @@ describe('Post_tests', function() {
       });
     });
     describe('Withdraw_wrong', function() {
-      it('Dont do withdraw on server and writes to file', function(done) {
-        chai.request(app).post('/api/operation/').send({
-          operation:
-          {
-              card_lim: -50000,
-              contract_num:26252000000900400,
-              oper_type:"Снятие",
-              balance: -500
-          }
-        }).end(function (err, res) {
-          expect(res).have.status(404);
-          done();
-      });
-      });
       it('Dont does credit withdraw on debet card', function(done) {
         chai.request(app).post('/api/operation/').send({
           operation:
@@ -211,6 +197,20 @@ describe('Post_tests', function() {
           done();
       });
     });
+      it('Dont do withdraw on server and writes to file', function(done) {
+        chai.request(app).post('/api/operation/').send({
+          operation:
+          {
+              card_lim: -50000,
+              contract_num:26252000000900400,
+              oper_type:"Снятие",
+              balance: -500
+          }
+        }).end(function (err, res) {
+          expect(res).have.status(404);
+          done();
+      });
+      });
       it('Dont does credit withdraw on universal card under credit limit', function(done) {
         chai.request(app).post('/api/operation/').send({
           operation:
