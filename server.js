@@ -17,6 +17,14 @@ var b_parser = require('body-parser');
   var comission = new Object();
   comission.com = 0;
   
+  const tok = "weewquewiqy343ui12y43iughewriueyoqbewrioe";
+  const deposit = "Депозит";
+  const withdraw = "Снятие";
+  const deb = "26251";
+  const unv = "26252";
+  const cred = "26253";
+  const bank_num = "26250111111111111";
+
   js.jsn('./contracts.json', function (err, json_from_file) {
     if(!err)
     json = json_from_file;
@@ -61,8 +69,10 @@ var b_parser = require('body-parser');
       var obj = req.body.contracts;
       var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num === req.body.contracts.contract_num));
       if(find === -1 && Number(obj.contract_num) >= 0 && obj.contract_num.length === 17 
-      && !isNaN(parseFloat(obj.contract_num)) && !isNaN(parseFloat(obj.balance)))
+      && !isNaN(parseFloat(obj.contract_num)) && !isNaN(parseFloat(obj.balance) > 0))
       {
+        if(obj.contract_num.indexOf() === 0)
+          obj.contract_num = Number(obj.contract_num) * -1;
         json.contracts.push({contract_num:obj.contract_num, 
           balance:obj.balance});
           fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
@@ -75,35 +85,51 @@ var b_parser = require('body-parser');
         res.sendStatus(500);
   });
 
+  function make_withdraw(fs,json, res, req, find)
+  {
+    var com;
+    if (Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && Number(req.body.operation.card_lim) !== 0)
+    {
+      comission.com += Number(req.body.operation.balance) / 100;
+      var cm = Number(req.body.operation.balance) / 100;
+      json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
+      json.contracts[find].balance -= cm;
+      fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
+      if (err) throw err;
+      console.log('comission has been saved!');
+      res.sendStatus(201);
+      });
+    }
+    else if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= Number(req.body.operation.card_lim))
+    {
+      json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
+      res.sendStatus(200);
+    }
+  }
+
+  function cancel_withdraw(find,json, res, operations, find_json)
+  {
+    if(json.contracts[find_json].balance < 0)
+    {
+      var cm = Number(operations[find].sum) / 100;
+      json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum) + cm;
+      comission.com -= (Number(operations[find].sum) / 100);
+
+    }
+    else
+      json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum);
+  }
+
   app.post('/api/operation/', function (req, res) {
     var find = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation.contract_num));
-    if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && req.body.operation.card_lim === 0 && req.body.operation.oper_type === 'Снятие') 
+    if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && req.body.operation.card_lim === 0 && req.body.operation.oper_type === withdraw) 
       res.sendStatus(404);
     else if((Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= req.body.operation.card_lim || req.body.operation.card_lim === 0) 
     && Number(req.body.operation.balance) > 0 && find !== -1)
     {
-    if(req.body.operation.oper_type == 'Снятие')
-    {
-      var com;
-      if (Number(json.contracts[find].balance) - Number(req.body.operation.balance) < 0 && Number(req.body.operation.card_lim) !== 0)
-      {
-        comission.com += Number(req.body.operation.balance) / 100;
-        var cm = Number(req.body.operation.balance) / 100;
-        json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
-        json.contracts[find].balance -= cm;
-        fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
-        if (err) throw err;
-        console.log('comission has been saved!');
-        res.sendStatus(201);
-        });
-      }
-      else if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= Number(req.body.operation.card_lim))
-      {
-        json.contracts[find].balance = Number(json.contracts[find].balance) - Number(req.body.operation.balance);
-        res.sendStatus(200);
-      }
-    }
-    else if(req.body.operation.oper_type === 'Депозит')
+    if(req.body.operation.oper_type == withdraw)
+      make_withdraw(fs,json, res, req, find);
+    else if(req.body.operation.oper_type === deposit)
     {
       json.contracts[find].balance = Number(json.contracts[find].balance) + Number(req.body.operation.balance);
       res.sendStatus(203);
@@ -112,11 +138,11 @@ var b_parser = require('body-parser');
       sum:req.body.operation.balance, oper_type:req.body.operation.oper_type,date:Date()})
       fs.writeFile('operations.json', JSON.stringify(operations), (err) => {
         if (err) throw err;
-        console.log('operations has been saved!');
+          console.log('operations has been saved!');
       });
-    fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
-      if (err) throw err;
-      console.log('contracts has been saved!');
+      fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
+        if (err) throw err;
+          console.log('contracts has been saved!');
     });
   }
   else
@@ -130,26 +156,16 @@ var b_parser = require('body-parser');
 app.post('/api/cancel_operation/', function (req, res) {
   var find = operations.indexOf(operations.find(x => x.contract_num == req.body.operation_cancel.contract_num));
   var find_json = json.contracts.indexOf(json.contracts.find(x => x.contract_num == req.body.operation_cancel.contract_num));
-  if(find === -1 || find_json === -1 || req.body.operation_cancel.token !== "weewquewiqy343ui12y43iughewriueyoqbewrioe")
+  if(find === -1 || find_json === -1 || req.body.operation_cancel.token !== tok)
       res.sendStatus(404);
   else
   {
     operations = operations.reverse();
     res.sendStatus(200);
-    if(operations[find].oper_type === 'Депозит')
+    if(operations[find].oper_type === deposit)
       json.contracts[find_json].balance = Number(json.contracts[find_json].balance) - Number(operations[find].sum);
     else
-    {
-      if(json.contracts[find_json].balance < 0)
-      {
-        var cm = Number(operations[find].sum) / 100;
-        json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum) + cm;
-        comission.com -= (Number(operations[find].sum) / 100);
-
-      }
-      else
-        json.contracts[find_json].balance = Number(json.contracts[find_json].balance) + Number(operations[find].sum);
-    }
+      cancel_withdraw(find,json, res, operations, find_json)
     operations.splice(find,1);
     operations = operations.reverse();
     fs.writeFile('operations.json', JSON.stringify(operations), (err) => {
