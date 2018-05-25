@@ -68,8 +68,8 @@ var b_parser = require('body-parser');
           fs.writeFile('contracts.json', JSON.stringify(json), (err) => {
             if (err) throw err;
             console.log('The file has been saved!');
-            res.sendStatus(200);
         });
+        res.sendStatus(200);
       }
       else
         res.sendStatus(500);
@@ -94,7 +94,7 @@ var b_parser = require('body-parser');
         fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
         if (err) throw err;
         console.log('comission has been saved!');
-        res.sendStatus(300);
+        res.sendStatus(201);
         });
       }
       else if(Number(json.contracts[find].balance) - Number(req.body.operation.balance) >= Number(req.body.operation.card_lim))
@@ -106,7 +106,7 @@ var b_parser = require('body-parser');
     else if(req.body.operation.oper_type === 'Депозит')
     {
       json.contracts[find].balance = Number(json.contracts[find].balance) + Number(req.body.operation.balance);
-      res.sendStatus(500);
+      res.sendStatus(203);
     }
     operations.push({contract_num:req.body.operation.contract_num,
       sum:req.body.operation.balance, oper_type:req.body.operation.oper_type,date:Date()})

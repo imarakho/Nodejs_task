@@ -145,7 +145,7 @@ describe('Post_tests', function() {
               balance: 11000
           }
         }).end(function (err, res) {
-          expect(res).to.have.status(500);
+          expect(res).to.have.status(203);
           done();
       });
       });
@@ -293,7 +293,7 @@ describe('Post_tests', function() {
             balance: 500
           }
         }).end(function (err, res) {
-          expect(res).to.have.status(300);
+          expect(res).to.have.status(201);
           done();
       });
       });

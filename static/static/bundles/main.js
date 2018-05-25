@@ -989,6 +989,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_axios___default.a, __WEBPACK_IMPORTED_MODULE_2_axios___default.a);
+//Vue.use(fs);
 
 new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
   el: '#app',
@@ -12449,25 +12450,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         make_operation: function () {
             if (this.oper_type !== "Снятие" && this.oper_type !== "Депозит" || Number(this.oper_balance) <= 0) this.error = prompt("Error!", "Wrong type of operation!");
             this.x = this.contracts.find(x => x.contract_num === this.contract_num_form);
-            if (!isNaN(parseFloat(this.oper_balance)) && Number.isInteger(this.oper_balance) && this.x !== undefined) {
+            console.log(this.x);
+            console.log(!isNaN(parseFloat(this.oper_balance)));
+
+            if (!isNaN(parseFloat(this.oper_balance)) /*&& Number.isInteger(this.oper_balance)*/ && this.x !== undefined) {
                 if (this.x.contract_num.indexOf("26251") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < 0 && this.oper_type == "Снятие") this.error = prompt("Error!", "Wrong ammount of money!");else {
                         this.error = prompt("Success!", "Debet operation is maked!");
+                        let self = this;
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
                                 card_lim: 0,
-                                contract_num: this.contract_num_form,
-                                oper_type: this.oper_type,
-                                balance: this.oper_balance
+                                contract_num: self.contract_num_form,
+                                oper_type: self.oper_type,
+                                balance: self.oper_balance
                             }
                         }).then(function (response) {
-                            console.log(response);
+                            self.operations.push({ contract_num: self.contract_num_form,
+                                sum: self.oper_balance, oper_type: self.oper_type, date: Date() });
                         }).catch(function (error) {
                             console.log(error);
                         });
                     }
                 } else if (this.x.contract_num.indexOf("26252") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) < -50000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");else {
+                        let self = this;
                         this.error = prompt("Success!", "Universal operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
@@ -12477,7 +12484,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 balance: this.oper_balance
                             }
                         }).then(function (response) {
-                            console.log(response);
+                            self.operations.push({ contract_num: self.contract_num_form,
+                                sum: self.oper_balance, oper_type: self.oper_type, date: Date() });
                         }).catch(function (error) {
                             console.log(error);
                         });
@@ -12485,6 +12493,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 } else if (this.x.contract_num.indexOf("26253") === 0) {
                     if (Number(this.x.balance) - Number(this.oper_balance) <= -150000 && this.oper_type == "Снятие") this.error = prompt("Error!", "Credit limit is over!");
                     if (Number(this.x.balance) + Number(this.oper_balance) > 0 && this.oper_type == "Депозит") this.error = prompt("Error!", "More money than your credit!");else {
+                        let self = this;
                         this.error = prompt("Success!", "Credit operation is maked!");
                         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/operation/', {
                             operation: {
@@ -12494,7 +12503,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 balance: this.oper_balance
                             }
                         }).then(function (response) {
-                            console.log(response);
+                            self.operations.push({ contract_num: self.contract_num_form,
+                                sum: self.oper_balance, oper_type: self.oper_type, date: Date() });
                         }).catch(function (error) {
                             console.log(error);
                         });
@@ -12502,24 +12512,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 } else this.error = prompt("Error!", "Wrong type of card!");
             } else if (this.contract_num_form.length == 17 && this.contract_num_form !== "26250111111111111" && this.oper_type === "Депозит") {
                 let self = this;
-                console.log(self);
+
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/new_contract/', {
                     contracts: {
-                        contract_num: this.contract_num_form,
-                        balance: this.oper_balance
+                        contract_num: self.contract_num_form,
+                        balance: self.oper_balance
                     }
                 }).then(function (response) {
-                    this.error = prompt("Yeah!", "New contract is added! THIS");
-                    console.log("self contract", self.contracts);
-                    self.contracts.push(this.contract_num_form, this.oper_balance);
+                    self.contracts.push({ contract_num: self.contract_num_form, balance: self.oper_balance });
+                    self.error = prompt("Yeah!", "New contract is added! THIS");
                 }).catch(function (error) {
-                    //this.error = prompt("Error!", "Wrong input!");
+                    this.error = prompt("Error!", "Wrong input!");
                 });
             } else this.error = prompt("Error!", "Wrong input!");
         }
     },
     created: function () {
-        this.type = "12334";
         let self = this;
         __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('http://localhost:8080/api/contracts/').then(function (response) {
             console.log(response);
