@@ -86,7 +86,7 @@ export default ({
             var find = self.contracts.indexOf(self.contracts.find(x => x.contract_num == self.contract_num_form_cancel));
             console.log(find);
             if(this.token !== tok || find === -1)
-                this.error = prompt("Error!", "Wrong token!");
+                this.error = prompt("Error!", "Wrong contract num or token!");
             else
             {
                 axios.post('http://localhost:8080/api/cancel_operation/', 

@@ -12444,7 +12444,7 @@ const bank_num = "26250111111111111";
             console.log(self.contract_num_form_cancel);
             var find = self.contracts.indexOf(self.contracts.find(x => x.contract_num == self.contract_num_form_cancel));
             console.log(find);
-            if (this.token !== tok || find === -1) this.error = prompt("Error!", "Wrong token!");else {
+            if (this.token !== tok || find === -1) this.error = prompt("Error!", "Wrong contract num or token!");else {
                 __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('http://localhost:8080/api/cancel_operation/', {
                     operation_cancel: {
                         contract_num: this.contract_num_form_cancel,
