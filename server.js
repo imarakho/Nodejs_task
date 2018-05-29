@@ -97,6 +97,7 @@ var b_parser = require('body-parser');
       fs.writeFile('comission.json', JSON.stringify(comission), (err) => {
       if (err) throw err;
       console.log('comission has been saved!');
+      var s = json.contracts[find];
       res.sendStatus(201);
       });
     }

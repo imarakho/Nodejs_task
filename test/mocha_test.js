@@ -294,7 +294,7 @@ describe('Cancel wrong contract number', function() {
   });
 });
 describe('Check comission', function() {
-  it('Cheks that comission puts on bank number', function(done) {
+  it('Checks that comission puts on bank number', function(done) {
     chai.request(app).post('/api/operation/').send({
       operation:
       {
